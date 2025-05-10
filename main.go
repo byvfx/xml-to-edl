@@ -98,7 +98,7 @@ func parseTimecodeToFrames(timecode string, fps int) int {
 }
 
 func main() {
-	myApp := app.New()
+	myApp := app.NewWithID("com.example.xmltoedlconverter")
 	myWindow := myApp.NewWindow("XML to EDL Converter")
 	myWindow.Resize(fyne.NewSize(400, 200))
 

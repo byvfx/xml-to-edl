@@ -1,0 +1,64 @@
+name: Build Go Application
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-windows:
+    name: Build for Windows (amd64)
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24.1' # From your go.mod file
+
+    - name: Test
+      run: go test ./...
+
+    - name: Build
+      run: go build -o xml-to-edl-go.exe .
+      env:
+        GOOS: windows
+        GOARCH: amd64
+        CGO_ENABLED: "1" # Fyne requires CGO
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: xml-to-edl-go-windows-amd64
+        path: xml-to-edl-go.exe
+
+  build-macos-arm64:
+    name: Build for macOS (arm64)
+    runs-on: macos-latest # This is an Intel Mac, cross-compiling to ARM64
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24.1' # From your go.mod file
+
+    - name: Test
+      run: go test ./...
+
+    - name: Build
+      run: go build -o xml-to-edl-go-macos-arm64 .
+      env:
+        GOOS: darwin
+        GOARCH: arm64
+        CGO_ENABLED: "1" # Fyne requires CGO
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: xml-to-edl-go-macos-arm64
+        path: xml-to-edl-go-macos-arm64
